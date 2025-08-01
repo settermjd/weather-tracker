@@ -2,11 +2,13 @@
     "require": {
         "asgrim/mini-mezzio": "^2.2",
         "laminas/laminas-db": "^2.20",
+        "laminas/laminas-hydrator": "^4.16",
         "laminas/laminas-servicemanager": "^4.4",
         "mezzio/mezzio-fastroute": "^3.13",
-        "settermjd/laminas-twilio-phone-number-validator": "^1.2",
+        "symfony/console": "^7.3",
         "twilio/sdk": "^8.7",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "akselmj/weatherapi-php-client": "dev-add-hydration-support"
     },
     "config": {
         "sort-packages": true,
@@ -24,5 +26,11 @@
             "Composer\\Config::disableProcessTimeout",
             "php -S 0.0.0.0:8080 -t public/"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/settermjd/weatherapi-php-client.git"
+        }
+    ]
 }
