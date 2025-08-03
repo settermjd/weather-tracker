@@ -66,9 +66,11 @@ final readonly class DatabaseService
     }
 
     /**
-     * getTrackingData returns a complete list of the users tracking weather, regardless of city.
+     * getUsersTrackingCity returns a complete list of the users tracking weather, regardless of city.
+     *
+     * @return \Traversable<int, UserCity>
      */
-    public function getTrackingData(string $city): ResultSetInterface|null
+    public function getUsersTrackingCity(string $city): HydratingResultSet|null
     {
         $sql = new Sql($this->adapter);
         $select = $sql
