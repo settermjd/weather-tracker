@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\City;
+use App\Entity\UserCity;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\ResultInterface;
+use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
+use Laminas\Hydrator\NamingStrategy\MapNamingStrategy;
+use Laminas\Hydrator\ReflectionHydrator;
 
 final readonly class DatabaseService
 {
@@ -72,7 +77,11 @@ final readonly class DatabaseService
             ->order('city ASC');
         $result = $sql->prepareStatementForSqlObject($select)->execute();
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet;
+            $hydrator = new ReflectionHydrator;
+            $hydrator->setNamingStrategy(MapNamingStrategy::createFromHydrationMap([
+                'phone_number' => 'phoneNumber',
+            ]));
+            $resultSet = new HydratingResultSet($hydrator, new UserCity());
             return $resultSet->initialize($result);
         }
 
@@ -81,8 +90,10 @@ final readonly class DatabaseService
 
     /**
      * getTrackedCities retrieves a unique, sorted list of cities being tracked
+     *
+     * @return \Traversable<int, City>
      */
-    public function getTrackedCities(): ResultSetInterface|null
+    public function getTrackedCities(): HydratingResultSet|null
     {
         $sql = new Sql($this->adapter);
         $select = $sql
@@ -95,7 +106,7 @@ final readonly class DatabaseService
             ->order('city ASC');
         $result = $sql->prepareStatementForSqlObject($select)->execute();
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet;
+            $resultSet = new HydratingResultSet(new ReflectionHydrator, new City());
             return $resultSet->initialize($result);
         }
 
