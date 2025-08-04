@@ -64,6 +64,21 @@ final readonly class DatabaseService
     }
 
     /**
+     * stopAllCityTrackingForUser stops tracking any and all cities for the
+     * user with the provided phone number.
+     */
+    public function stopAllCityTrackingForUser(string $phoneNumber): bool
+    {
+        $sql = new Sql($this->adapter);
+        $delete = $sql
+            ->delete(self::TABLE)
+            ->where(new Where()->equalTo("phone_number", $phoneNumber));
+        $result = $sql->prepareStatementForSqlObject($delete)->execute();
+
+        return $result->getAffectedRows() >= 1;
+    }
+
+    /**
      * getUsersTrackingCity returns a complete list of the users tracking weather, regardless of city.
      *
      * @return \Traversable<int, UserCity>

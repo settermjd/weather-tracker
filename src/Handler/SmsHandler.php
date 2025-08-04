@@ -45,6 +45,14 @@ final readonly class SmsHandler implements RequestHandlerInterface
             return new XmlResponse($response->asXML());
         }
 
+        if (strtolower(trim($body)) === "stop tracking") {
+            $this->databaseService->stopAllCityTrackingForUser($from);
+            $response->message(
+                "We're no longer tracking the daily weather for you."
+            );
+            return new XmlResponse($response->asXML());
+        }
+
         // Handle requests to stop tracking a phone number
         if (
             str_starts_with($body, 'stop tracking')
