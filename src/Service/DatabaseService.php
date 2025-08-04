@@ -56,10 +56,8 @@ final readonly class DatabaseService
         $sql = new Sql($this->adapter);
         $delete = $sql
             ->delete(self::TABLE)
-            ->where(new Where([
-                "city" => $city,
-                "phone_number" => $phoneNumber,
-            ]));
+            ->where(new Where()->equalTo("city", $city))
+            ->where(new Where()->equalTo("phone_number", $phoneNumber));
         $result = $sql->prepareStatementForSqlObject($delete)->execute();
 
         return $result->getAffectedRows() === 1;
